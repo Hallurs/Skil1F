@@ -35,7 +35,8 @@ let rec truesAndLength bs =
   match bs with
   | [] -> 0, 0
   | head::tail ->
-    if head then LT (1,1) (truesAndLength tail) else LT (1, 0) (truesAndLength tail)
+    if head then LT (1,1) (truesAndLength tail) 
+    else LT (1,0) (truesAndLength tail)
 
 
 
@@ -54,7 +55,19 @@ majority [true; false; false; true; true];;
 
 
 // majority2 : ('a -> bool) -> 'a list -> bool
-let majority2 p xs = failwith "Not implemented"
+let majority2 p xs = 
+  xs |> List.iter (fun item -> p(item))
+  
+
+
+
+
+majority2 (fun x -> x = "") [];;
+majority2 (fun x -> x = "") [""];;
+majority2 (fun x -> x = "") [""; "a"];;
+majority2 (fun x -> x = "") [""; "a"; "b"];;
+majority2 (fun x -> x = "") [""; "a"; "b"; ""];;
+majority2 (fun x -> x = "") [""; "a"; "b"; ""; ""];;
 
 // majorityLarge : int list -> bool
 let majorityLarge xs = failwith "Not implemented"
