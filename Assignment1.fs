@@ -30,26 +30,28 @@ nf 4;;
 ////////////////////////////////////////////////////////////////////////
 
 // truesAndLength : bool list -> int * int
-let rec truesAndLength bs =
-  let mutable x = 0
-  let mutable y = 0
-  match bs with 
-  | head::bs -> 1 + truesAndLength 
-  | [] -> tupleMaker x y
-and tupleMaker x y = 
-  (1,1)
+let rec truesAndLength bs = 
+  let LT x y = (fst x + fst y, snd x + snd y)
+  match bs with
+  | [] -> 0, 0
+  | head::tail ->
+    if head then LT (1,1) (truesAndLength tail) else LT (1, 0) (truesAndLength tail)
 
-
-truesAndLength [];;
-truesAndLength [true];;
-truesAndLength [true; false];;
-truesAndLength [true; false; false];;
-truesAndLength [true; false; false; true];;
-truesAndLength [true; false; false; true; true];;
 
 
 // majority : bool list -> bool
-let rec majority bs = failwith "Not implemented"
+let rec majority bs = 
+  let tupla = truesAndLength bs
+  if float(fst tupla)/2.0 <= float(snd tupla) then true
+  else false
+
+majority [];;
+majority [true];;
+majority [true; false];;
+majority [true; false; false];;
+majority [true; false; false; true];;
+majority [true; false; false; true; true];;
+
 
 // majority2 : ('a -> bool) -> 'a list -> bool
 let majority2 p xs = failwith "Not implemented"
