@@ -38,7 +38,12 @@ let rec truesAndLength bs =
     if head then LT (1,1) (truesAndLength tail) 
     else LT (1,0) (truesAndLength tail)
 
-
+truesAndLength [];;
+truesAndLength [true];;
+truesAndLength [true; false];;
+truesAndLength [true; false; false];;
+truesAndLength [true; false; false; true];;
+truesAndLength [true; false; false; true; true];;
 
 // majority : bool list -> bool
 let rec majority bs = 
@@ -55,9 +60,9 @@ majority [true; false; false; true; true];;
 
 
 // majority2 : ('a -> bool) -> 'a list -> bool
-let majority2 p xs = 
-  xs |> List.iter (fun item -> p(item))
-  
+let majority2 p xs= 
+  let newList = List.map(fun x -> p x) xs
+  majority newList
 
 
 
@@ -70,8 +75,14 @@ majority2 (fun x -> x = "") [""; "a"; "b"; ""];;
 majority2 (fun x -> x = "") [""; "a"; "b"; ""; ""];;
 
 // majorityLarge : int list -> bool
-let majorityLarge xs = failwith "Not implemented"
+let majorityLarge xs = 
+  majority2 (fun x -> if x >= 100 then true else false) xs
 
+
+majorityLarge [3;400;10];;
+majorityLarge [3;400;10;100];;
+majorityLarge [3;400;10;100;12];;
+majorityLarge [3;400;10;100;12;101;102];;
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -79,10 +90,33 @@ let majorityLarge xs = failwith "Not implemented"
 ////////////////////////////////////////////////////////////////////////
 
 // isGood : ('a * 'b) list -> bool when 'a: equality
-let rec isGood ps = failwith "Not implemented"
+let rec isGood ps = 
+  match ps with
+  | x::(x'::_ as tail) -> if fst x = fst x' then false else (isGood tail)
+  | [] | [_] -> true
+
+isGood [("p",4);("q",5); ("q",6);("r",6);("p",4)];;
+isGood [("p",4);("q",5);("q2",6);("r",6);("p",4)];;
+isGood [];;
+isGood [(0, 1); (0, 1)];;
+isGood [(0, 1); (1, 1); (0, 1)];;
+isGood [(0, 1); (1, 1); (0, 1); (0, 1)];;
 
 // makeGoodInt : ('a * int) list -> ('a * int) list when 'a: equality
-let rec makeGoodInt ps = failwith "Not implemented"
+let rec makeGoodInt ps = 
+  match ps with
+  | [] -> []
+  | x::(x'::_ as ps) -> if fst x = fst x' then Checker((fst x, snd x + snd x') x::ps)
+  | x:: ps -> (fst x, snd x) :: makeGoodInt ps
+and Checker bv ps =
+  if fst bv = fst ps then (fst bv, fst bv + fst ps)::makeGoodInt ps 
+  
+
+makeGoodInt [("p",4);("q",5); ("q",6);("r",6);("p",4)];;
+makeGoodInt [("p",4);("q",5); ("q",6); ("q", -11);("r",6);("p",4)];;
+makeGoodInt [("p",4);("q",5); ("q",6);("r",6);("q", -11);("p",4)];;
+makeGoodInt [("p",4);("q",6);("r",6);("q", -11);("p",4)];;
+makeGoodInt [("p",4);("p",10);("q",6);("r",6);("q", -11);("p",4); ("p",5)];;
 
 // makeGoodWith : ('b -> 'b -> 'b) -> ('a * 'b) list -> ('a * 'b) list
 //                                                     when 'a: equality
