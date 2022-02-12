@@ -106,10 +106,8 @@ isGood [(0, 1); (1, 1); (0, 1); (0, 1)];;
 let rec makeGoodInt ps = 
   match ps with
   | [] -> []
-  | x::(x'::_ as ps) -> if fst x = fst x' then Checker((fst x, snd x + snd x') x::ps)
-  | x:: ps -> (fst x, snd x) :: makeGoodInt ps
-and Checker bv ps =
-  if fst bv = fst ps then (fst bv, fst bv + fst ps)::makeGoodInt ps 
+  | x::x'::ps when fst x = fst x' -> makeGoodInt((fst x, snd x + snd x')::ps) 
+  | x::ps -> (fst x, snd x)::makeGoodInt ps
   
 
 makeGoodInt [("p",4);("q",5); ("q",6);("r",6);("p",4)];;
@@ -120,7 +118,18 @@ makeGoodInt [("p",4);("p",10);("q",6);("r",6);("q", -11);("p",4); ("p",5)];;
 
 // makeGoodWith : ('b -> 'b -> 'b) -> ('a * 'b) list -> ('a * 'b) list
 //                                                     when 'a: equality
-let rec makeGoodWith f ps = failwith "Not implemented"
+let rec makeGoodWith f ps = 
+
+
+
+makeGoodWith (*) [("p",4);("q",5); ("q",6);("r",6);("p",4)];;
+// val it: (string * int) list = [("p", 4); ("q", 30); ("r", 6); ("p", 4)]
+makeGoodWith (*) [("p",4);("q",5); ("q",6); ("q", -11);("r",6);("p",4)];;
+// val it: (string * int) list = [("p", 4); ("q", -330); ("r", 6); ("p", 4)]
+makeGoodWith (*) [("p",4);("q",5); ("q",6);("r",6);("q", -11);("p",4)];;
+// val it: (string * int) list = [("p", 4); ("q", 30); ("r", 6); ("q", -11); ("p", 4)]
+makeGoodWith (+) [(0, "x"); (0, "y"); (1, "z")];;
+// val it: (int * string) list = [(0, "xy"); (1, "z")]
 
 
 
