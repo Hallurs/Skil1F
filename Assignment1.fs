@@ -211,6 +211,15 @@ let rec getValAt p t = failwith "Not implemented"
 //   | R p, Leaf            -> failwith "Cannot continue"
 //   | R p, Branch (_, _, t2) -> getValAt p t2
 
+// This next bit is a hint from Piazza, haven´t figured out how to make it work
+// You can find out what kind any next node is by pattern matching:
+
+// let rec getValAt p t = 
+//   match t with 
+//   | Leaf -> ...
+//   | Branch -> (v, tl, tr) -> ...
+//   | Mul (q, t) -> ...
+
 // toTree : mtree -> int tree
 let toTree t = failwith "Not implemented"
 
