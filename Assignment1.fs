@@ -3,6 +3,7 @@
 (*
 STUDENT NAMES HERE:
   Hallur Hermannsson Aspar
+  Sigurður Sigurðsson
   ...
 *)
 
@@ -201,6 +202,14 @@ type pos =
 
 // getValAt : pos -> mtree -> int
 let rec getValAt p t = failwith "Not implemented"
+
+// let rec getValAt p t =
+//   match p, t with
+//   | S,   t             -> t
+//   | Leaf p, Leaf            -> failwith "Cannot continue"
+//   | L p, Branch (_, t1, _) -> getValAt p t1
+//   | R p, Leaf            -> failwith "Cannot continue"
+//   | R p, Branch (_, _, t2) -> getValAt p t2
 
 // toTree : mtree -> int tree
 let toTree t = failwith "Not implemented"
