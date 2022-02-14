@@ -106,7 +106,7 @@ isGood [(0, 1); (1, 1); (0, 1); (0, 1)];;
 let rec makeGoodInt ps = 
   match ps with
   | [] -> []
-  | x::x'::ps when fst x = fst x' -> makeGoodInt((fst x, snd x + snd x')::ps) 
+  | x::x'::ps when fst x = fst x' -> makeGoodInt(( fst x, snd x + snd x')::ps) 
   | x::ps -> (fst x, snd x)::makeGoodInt ps
   
 
@@ -119,7 +119,10 @@ makeGoodInt [("p",4);("p",10);("q",6);("r",6);("q", -11);("p",4); ("p",5)];;
 // makeGoodWith : ('b -> 'b -> 'b) -> ('a * 'b) list -> ('a * 'b) list
 //                                                     when 'a: equality
 let rec makeGoodWith f ps = 
-
+  match ps with
+  | [] -> []
+  | x::x'::ps when fst x = fst x' -> (fun x x' f -> f  x  x') 
+  | x::ps -> (fst x, snd x)::makeGoodWith ps
 
 
 makeGoodWith (*) [("p",4);("q",5); ("q",6);("r",6);("p",4)];;
@@ -144,17 +147,29 @@ let rec shuffle xs =
   | [x] -> [x]
   | x::y::xs -> x :: (shuffle xs @ [y])
 
+shuffle[1;2;3;4;5;6;7;8;9];;
 (*
 ANSWER 4(i) HERE:
-  ...
+  The reason why it's O(n^2) is because it handles two variables at once, it takes the first variable and puts it into the next position and the
+  y variable and puts it at the end and it does this untill it reaches the middle of the list, if we would think about this in regular code
+  you could imagine there being 2 for loops working together to make this happen.
 *)
 
 
 // shuffle2 : 'a list -> 'a list
 let shuffle2 xs =
   // shuffleAcc : 'a list -> 'a list -> 'a list
-  let rec shuffleAcc acc xs = failwith "Not implemented"
+  let rec shuffleAcc acc xs = 
+    match xs with
+    | [] -> acc
+    | [y] -> y::acc
+    | x::y::xs' -> ([x] @ shuffleAcc (y::acc) xs')
   shuffleAcc [] xs
+
+shuffle2 [1..10];;
+shuffle2 [1..11];;
+shuffle2 [-5..2];;
+shuffle2 [0];;
 
 
 
@@ -174,10 +189,40 @@ let rec foo xs =
 let fooDefault d xs = try foo xs with FooException -> d
 
 // foo2 : int list -> int option
-let rec foo2 xs = failwith "Not implemented"
+
+let rec foo2 xs =
+  let RD (t:int option) (b:int option) =   if t.IsNone || b.IsNone then None else Some(t.Value + b.Value)
+  match xs with
+  | x::tail when x < 0 ->   None
+  | x::tail -> (RD (Some x)) (foo2 tail)
+  | [] ->  Some 0
+  
+
+
+foo2 [1..5];;
+// val it: int option = Some 15
+foo2 [1;2;3;4;3;2;1];;
+// val it: int option = Some 16
+foo2 [1;2;3;4;-3;2;1];;
+// val it: int option = None
+foo2 [-1];;
+// val it: int option = None
 
 // foo2Default : int -> int list -> int
-let foo2Default d xs = failwith "Not implemented"
+let foo2Default (d:int) xs = 
+  let x = foo2 xs
+  if x.IsNone then d
+  else x.Value
+
+
+foo2Default -5 [1..5];;
+// val it: int = 15
+foo2Default -5 [1;2;3;4;3;2;1];;
+// val it: int = 16
+foo2Default -5 [1;2;3;4;-3;2;1];;
+// val it: int = -5
+foo2Default -4 [-1];;
+// val it: int = -4
 
 
 
